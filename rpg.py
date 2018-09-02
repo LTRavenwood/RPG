@@ -77,14 +77,17 @@ class Ally(Character):
             if self.is_alive:
                 print(f'{self.name}\'s turn!')
                 print('Who do you attack?')
+                for player in players:
+                    if not player.is_ally(self) and player.is_alive():
+                        print(player.name)
                 targeted_enemy = None
                 while targeted_enemy == None:
                     user_input = input('>')
                     targeted_enemy = enemies.get(user_input)
                     damaged_player = self.deal_damage(targeted_enemy)
-                    return players
-                else:
-                    return players
+                return players
+            else:
+                return players
     
 class Enemy(Character):
     # another subclass of character
@@ -145,8 +148,10 @@ class Battle:
             if acting_player.is_alive():
                 updated_players = acting_player.act(self.players)
                 self.players = updated_players
-                print(f'All players\' hp: {[player.hp for player in self.players]}')
-                if acting_player.is_alive and acting_player.get_all_enemies(self.players):
+                for player in self.players:
+                    if player.is_alive():
+                        print(player.name + ':', player.hp)
+                if acting_player.is_alive and acting_player.get_all_enemies(self.players):     
                     self.add_into_queue(acting_player, current_game_time)
             else:
                 print(f'{acting_player.name} is dead!')
